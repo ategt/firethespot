@@ -1,0 +1,9 @@
+https://stackoverflow.com/questions/14329691/convert-latitude-longitude-point-to-a-pixels-x-y-on-mercator-projection
+
+OGP Geomatics Committee, Guidance Note Number 7, part 2: Coordinate Conversions and Transformation
+http://en.wikipedia.org/wiki/Mercator_projection#Derivation_of_the_Mercator_projection
+http://www.nationalatlas.gov/articles/mapping/a_projections.html
+https://stackoverflow.com/questions/1019997/convert-lat-longs-to-x-y-co-ordinates
+
+
+https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
