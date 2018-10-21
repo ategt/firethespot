@@ -12,9 +12,9 @@ class TestNasaFire(unittest.TestCase):
     def test_data_loader(self):
         here = {'lat': 41.4161, 'lon': -81.8583}
 
-        edataset24 = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_24h", here, 24)
-        edataset48 = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_48h", here, 48)
-        edataset7d = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_7d", here, 7*24)
+        edataset24 = nasa_fire.load_to_enhanced_plots( "firedata/MODIS_C6_USA_contiguous_and_Hawaii_24h", here, 24)
+        edataset48 = nasa_fire.load_to_enhanced_plots( "firedata/MODIS_C6_USA_contiguous_and_Hawaii_48h", here, 48)
+        edataset7d = nasa_fire.load_to_enhanced_plots( "firedata/MODIS_C6_USA_contiguous_and_Hawaii_7d", here, 7*24)
 
         self.assertNotEqual(len(edataset24), len(edataset48))
         self.assertNotEqual(len(edataset24), len(edataset7d))
@@ -23,7 +23,7 @@ class TestNasaFire(unittest.TestCase):
     def test_dist(self):
         here = {'lat': 41.4161, 'lon': -81.8583}
         
-        edataset7d = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_7d", here, 7*24)
+        edataset7d = nasa_fire.load_to_enhanced_plots( "firedata/MODIS_C6_USA_contiguous_and_Hawaii_7d", here, 7*24)
 
         self.assertTrue(edataset7d[0]['distance'] < 20)
 
@@ -52,30 +52,32 @@ class TestNasaFire(unittest.TestCase):
         self.assertEqual(speed_result, 1)
         self.assertEqual(velocity_result, -1)
 
-    def test_vadd_velocity(self):
+    def test_add_velocity(self):
         d2 = {'distance': 2, 'time_frame': 2}
         d1 = {'distance': 1, 'time_frame': 1}
 
-        d0 = {'distance': 0, 'time_frame': 2}
+        should_be_d1_list = nasa_fire.add_velocity([d1], [d2])
 
-        should_be_d1 = nasa_fire.add_velocity([d1], [d2])
+        self.assertEqual([d1], should_be_d1_list)
 
-        self.assertEqual(d1, should_be_d1)
+        should_be_d1_list = nasa_fire.add_velocity([d2], [d1])
+
+        self.assertEqual([d1], should_be_d1_list)
+
     def test_nearest_moving_fire(self):
         here = {'lat': 41.4161, 'lon': -81.8583}
 
-        edataset24 = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_24h", here, 24)
-        edataset48 = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_48h", here, 48)
-        edataset7d = nasa_fire.load_to_enhanced_plots( r"C:\Users\ATeg\Desktop\kata\firedata\MODIS_C6_USA_contiguous_and_Hawaii_7d", here, 7*24)
+        edataset48 = nasa_fire.load_to_enhanced_plots( "firedata/MODIS_C6_USA_contiguous_and_Hawaii_48h", here, 48)
+        edataset7d = nasa_fire.load_to_enhanced_plots( "firedata/MODIS_C6_USA_contiguous_and_Hawaii_7d", here, 7*24)
 
         most_recent_dataset = nasa_fire.add_velocity(edataset48, edataset7d)
 
         closest_moving_fire = nasa_fire.nearest_moving_fire(most_recent_dataset)
 
-        self.assertNotEqual(len(edataset24), len(edataset48))
-        self.assertNotEqual(len(edataset24), len(edataset7d))
-        self.assertNotEqual(len(edataset48), len(edataset7d))
-
+        self.assertEqual(closest_moving_fire, {'distance': 403.7411418283776,
+                                                    'latlon': {'lat': 37.794, 'lon': -82.165},
+                                                    'time_frame': 48,
+                                                    'velocity': -2.1504311258778817})
 
 if __name__ == '__main__':
     unittest.main()

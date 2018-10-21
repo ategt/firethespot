@@ -104,17 +104,17 @@ def add_velocity(dataset1, dataset2):
         if fire1['time_frame'] > fire2['time_frame']:
             fire2['velocity'] = velocity_value
         elif fire1['time_frame'] < fire2['time_frame']:
-            fire2['velocity'] = velocity_value
+            fire1['velocity'] = velocity_value
         else:
             raise Exception("The same dataset was passed as both arguments.")
 
     return dataset2 if dataset1[0]['time_frame'] > dataset2[0]['time_frame'] else dataset1
 
-def nearest_moving_fire(dataset, threashold = 0.01):
+def nearest_moving_fire(dataset, threashold = 1.5):
     " Takes a dataset with velocity and distance attributes and returns the nearest one. "
     sorted_dataset = sorted(dataset, key=lambda item: item['distance'])
 
-    return [ fire for fire in sorted_dataset if fire['velocity'] > threashold][0]
+    return [ fire for fire in sorted_dataset if abs(fire['velocity']) > threashold][0]
 
 def load_to_enhanced_plots( path, here, retrieval_time ):
     """
@@ -125,3 +125,7 @@ def load_to_enhanced_plots( path, here, retrieval_time ):
     enhanced_dataset = add_time_frame(enhanced_dataset, retrieval_time )
     
     return enhanced_dataset
+
+def kilometers_to_miles(kilometers):
+    " 1 Kilometer is about 0.621371 miles "
+    return kilometers * 0.621371
